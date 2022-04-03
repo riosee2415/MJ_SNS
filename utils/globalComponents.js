@@ -10,4 +10,6 @@ export const Wrapper = styled.div`
   justify-content: ${(props) => props.ju || "center"};
 
   background-color: ${(props) => props.bg || ""};
+
+  padding: ${(props) => props.padding || ""};
 `;
