@@ -1,5 +1,6 @@
 import { all, fork } from "redux-saga/effects";
 import testSaga from "./test";
+import userSaga from "./user";
 //
 import axios from "axios";
 // import backURL from "../config/config";
@@ -8,5 +9,9 @@ import axios from "axios";
 // axios.defaults.withCredentials = true;
 
 export default function* rootSaga() {
-  yield all([fork(testSaga)]);
+  yield all([
+    fork(testSaga),
+    fork(userSaga),
+    //
+  ]);
 }

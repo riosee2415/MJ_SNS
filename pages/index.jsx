@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Wrapper } from "../utils/globalComponents";
 import styled from "styled-components";
-import { Form, Input } from "antd";
+import { Form, Input, message } from "antd";
 import FeedBox from "../components/FeedBox";
 import Fade from "react-reveal/Fade";
 import FollowBox from "../components/FollowBox";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  TESTCALL_REQUEST,
+  USERLIST_REQUEST,
+  GET_LOGIN_USER_REQUEST,
+} from "../reducers/user";
 
 const SearchWrapper = styled(Wrapper)`
   box-shadow: -4px -4px 10px 2px #d7d7d7;
@@ -68,6 +74,34 @@ const MateWrapper = styled(Wrapper)`
 const App = () => {
   const [feedWidth, setFeedWidth] = useState(65);
 
+  const { st_testCallLoading, st_testCallDone, st_testCallError, me } =
+    useSelector((state) => state.user);
+
+  console.log(me);
+
+  const dispatch = useDispatch();
+
+  const saveVirtualLoginInfo = async () => {
+    await localStorage.setItem("mj_login_id", 1);
+  };
+
+  useEffect(() => {
+    saveVirtualLoginInfo();
+
+    dispatch({
+      type: GET_LOGIN_USER_REQUEST,
+      data: {
+        userId: localStorage.getItem("mj_login_id"),
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    if (st_testCallDone) {
+      message.success("백앤드 서버와 통신에 성공했습니다.");
+    }
+  }, [st_testCallDone]);
+
   return (
     <Wrapper height="100vh" dr="row">
       {/* LEFT FEED SECITON */}
@@ -128,13 +162,13 @@ const App = () => {
           <Wrapper dr="row">
             <Wrapper width="40%">
               <Fade bottom>
-                <ProfileImage src="https://picsum.photos/300/309" />
+                <ProfileImage src={me ? me.avatar : ""} />
               </Fade>
             </Wrapper>
             <Wrapper width="60%">
-              <ProfileTxt>dVidmz.XXO</ProfileTxt>
-              <ProfileTxt>1999.04.55</ProfileTxt>
-              <ProfileTxt>ㄴr는 ㄱr끔 눙물을 흘린ㄷr.</ProfileTxt>
+              <ProfileTxt>{me ? me.username : ""}</ProfileTxt>
+              <ProfileTxt>{me ? me.birth : ""}</ProfileTxt>
+              <ProfileTxt>{me ? me.msg : ""}</ProfileTxt>
             </Wrapper>
           </Wrapper>
         </Wrapper>
